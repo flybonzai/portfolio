@@ -106,9 +106,9 @@ def send_email(recipient_list, missing_list, hshake_type):
 					 'Sent to Pivot at: {1}\n'
 					 'Pivot ID: {2}\n'
 					 'Property Code: {3}\n\n'.format(element[1],
-										    		 element[2],
-										    		 element[0],
-										    		 element[3]) for element in missing_list])
+									 element[2],
+								 	 element[0],
+									 element[3]) for element in missing_list])
 	msg = MIMEText(msg)
 	msg['Subject'] = 'Subject: Alert!! {0} files missing!'.format(hshake_type.capitalize())
 	msg['From'] = r'***@***.com'
