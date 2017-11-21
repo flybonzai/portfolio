@@ -72,6 +72,48 @@ class APIRetry:
             raise latest_exc
         return wrap
 
+    
+@singledispatch
+def clean_data(data):
+    """
+    Dispatch function meant to clean arbitrarily nested and messy data
+    structures.  Will clean data in a dictionary, list, or string format.
+    Other data types are ignored.
+
+    :param data: A data structure that will typically come from a JSON object,
+     and thus will most often be a dictionary or list.
+    """
+    pass
+
+
+@clean_data.register(numbers.Real)
+def return_num(n):
+    return n
+
+
+@clean_data.register(str)
+def clean_str(s):
+    rx = re.compile('[\r\n|]')
+    return rx.sub(' ', s)
+
+
+@clean_data.register(dict)
+def clean_dict(d):
+    for key, value in d.items():
+        if isinstance(value, str):
+            d[key] = clean_data(value)
+        else:
+            clean_data(value)
+
+
+@clean_data.register(list)
+def clean_list(l):
+    for index, item in enumerate(l):
+        if isinstance(item, str):
+            l[index] = clean_data(item)
+        else:
+            clean_data(item)
+
 
 if __name__ == '__main__':
     pass
